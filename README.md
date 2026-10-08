@@ -13,7 +13,7 @@ this folder with any static HTTP server.
 - `#edited`: preserve the original $100 invoice; create a $300 invoice for added
   items on a revised $400 sale.
 
-Use **Preview and edit invoice** to change invoice delivery, terms, or notes.
+Use **Preview and edit** to change invoice delivery, terms, or notes.
 The preview updates while editing. **Save changes** applies the draft settings;
 **Discard changes**, the close button, and Escape discard edits. Complete sale
 simulates the outcome. Reset scenario returns to its initial state.

@@ -67,10 +67,9 @@ function render() {
     }
   }
   $('original-invoice').hidden = scenario !== 'edited';
-  $('invoice-summary').textContent = `${scenario === 'edited' ? 'New invoice' : 'Invoice total'} ${money(fixture.invoice)} · ${termsLabel(state)}`;
-  $('payment-summary').hidden = !fixture.cash && scenario !== 'edited';
-  $('payment-summary').textContent = fixture.cash ? `${money(fixture.cash)} paid by cash · ${money(fixture.invoice - fixture.cash)} due` : 'For the added items. Original invoice INV0001 stays unchanged.';
-  $('delivery-summary').textContent = state.send ? `Send to ${state.email} when you complete the sale.` : 'Save to John Smith’s account without sending an email.';
+  $('summary-amount').textContent = money(fixture.invoice);
+  $('summary-date').textContent = dateLabel(dueDate(state));
+  $('summary-outcome').textContent = state.send ? 'will be emailed' : 'will be saved';
   $('receipt-address').textContent = fixture.email || 'No customer email';
   $('receipt-email').checked = state.receipt;
   $('receipt-email').disabled = !fixture.email || state.completed;
@@ -81,8 +80,7 @@ function render() {
   $('completion').hidden = !state.completed;
   if (state.completed) {
     const invoiceId = scenario === 'edited' ? 'INV0002' : 'INV0001';
-    $('invoice-summary').textContent = `${invoiceId} · Invoice total ${money(fixture.invoice)} · ${termsLabel(state)}`;
-    $('delivery-summary').textContent = state.send ? `Invoice sent to ${state.email}.` : 'Invoice saved to John Smith’s account.';
+    $('summary-outcome').textContent = state.send ? 'sent by email' : 'saved to John Smith’s account';
     $('completion-message').textContent = state.send ? `${invoiceId} saved to John Smith’s account. Invoice sent to ${state.email}.` : `${invoiceId} saved to John Smith’s account. No invoice email sent.`;
     $('completion-amounts').textContent = `Invoice total ${money(fixture.invoice)} · Amount due ${money(fixture.invoice - fixture.cash)}${state.receipt ? ` · Receipt sent to ${fixture.email}` : ''}`;
   }
@@ -116,7 +114,6 @@ function renderPreview() {
   $('email-field').hidden = !draft.send;
   $('email').disabled = !draft.send;
   $('email').required = draft.send;
-  $('saved-hint').hidden = draft.send;
   $('due-date').readOnly = draft.terms !== 'custom';
 }
 function openInvoice() {

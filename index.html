@@ -45,10 +45,8 @@
             <div class="balances"><div><small>Account balance</small><span id="balance"></span><small id="available" class="muted"></small></div><div><small>Loyalty balance</small><span>$0.00</span></div><div><small>Store credit</small><span>$0.00</span></div></div>
           </section>
           <section class="invoice-block" aria-label="Invoice summary">
-            <p id="invoice-summary"></p>
-            <p id="payment-summary" class="secondary" hidden></p>
-            <p id="delivery-summary"></p>
-            <button class="text-button" id="edit-invoice">Preview and edit invoice <span aria-hidden="true">♢</span></button>
+            <p id="invoice-summary">Invoice (<strong id="summary-amount"></strong>, due on <strong id="summary-date"></strong>) <span id="summary-outcome"></span></p>
+            <button class="text-button" id="edit-invoice" aria-label="Preview and edit invoice">Preview and edit <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 5 5-12 12-6 1 1-6Z"/><path d="m14 5 5 5"/></svg></button>
           </section>
           <section class="receipt-block" aria-label="Receipt delivery"><label class="check-row"><input type="checkbox" id="receipt-email"><span>Send receipt by email to <strong id="receipt-address"></strong></span></label><p class="secondary" id="receipt-hint">Customer receipt · Separate from the invoice</p></section>
           <div class="sale-note-field"><label for="sale-note">Sale note (optional)</label><textarea id="sale-note" rows="2" placeholder="Add details about the sale"></textarea></div>
@@ -69,7 +67,7 @@
           <div id="preview-note-wrap" class="preview-note" hidden><span class="muted">Note</span><p id="preview-note"></p></div>
           <div class="amount-card"><span class="secondary">Amount due</span><strong id="preview-due"></strong><span id="preview-date" aria-live="polite"></span></div>
         </article>
-        <div class="payment-placeholder"><p>Online payment options</p><small>Customer payment controls appear on the issued invoice for Lightspeed Payments merchants.</small></div>
+        <div class="payment-placeholder"><p>Online payment options will appear here</p></div>
         <article class="document-card item-card"><details open><summary>Invoice items</summary><div id="preview-items"></div></details><div class="row"><span>Subtotal</span><span id="preview-subtotal"></span></div><div class="row muted"><span>Tax</span><span>$0.00</span></div><div class="row"><strong>Invoice total</strong><strong id="preview-total"></strong></div><div class="row" id="preview-payment-row" hidden><span>Cash payment</span><span>−$40.00</span></div><div class="row total-due"><strong>Amount due</strong><strong id="preview-remaining"></strong></div><p id="preview-delta" class="secondary" hidden>New invoice for the $300.00 added to the sale. Original invoice INV0001 stays unchanged.</p></article>
       </section>
       <form id="invoice-form" novalidate>
@@ -77,10 +75,10 @@
           <button type="button" id="close-modal" class="close" aria-label="Discard changes and close">×</button>
           <h2 id="modal-title">Invoice settings</h2>
           <p id="modal-description">Preview your customer’s invoice. Your changes apply when you complete the sale.</p>
-          <fieldset><legend>Invoice delivery</legend><label class="check-row"><input type="checkbox" id="send-email"><span>Send invoice by email</span></label><div id="email-field"><label for="email">Email address</label><input id="email" type="email" autocomplete="off" placeholder="email@example.com" aria-describedby="email-help email-error"><small id="email-help">For this invoice only</small><p id="email-error" class="field-error" role="alert" hidden></p></div><p id="saved-hint" class="secondary" hidden>Completing the sale saves the invoice to John Smith’s account without sending an email.</p></fieldset>
+          <fieldset><legend>Invoice delivery</legend><label class="check-row"><input type="checkbox" id="send-email"><span>Send invoice by email</span></label><div id="email-field"><label for="email">Email address</label><input id="email" type="email" autocomplete="off" placeholder="email@example.com" aria-describedby="email-help email-error"><small id="email-help">Changing this email address won’t update the customer profile or the receipt email address.</small><p id="email-error" class="field-error" role="alert" hidden></p></div></fieldset>
           <div class="date-fields"><div><label for="terms">Payment terms</label><select id="terms"><option value="0">Due upon receipt</option><option value="15">Net 15</option><option value="30">Net 30</option><option value="60">Net 60</option><option value="custom">Custom</option></select></div><div><label for="due-date">Due date</label><input id="due-date" type="date" aria-describedby="date-error"></div></div>
           <p id="date-error" class="field-error" role="alert" hidden></p>
-          <div class="note-field"><label for="invoice-note">Notes (optional)</label><textarea id="invoice-note" rows="4" aria-describedby="note-help" placeholder="Add information or instructions for the customer"></textarea><small id="note-help">Appears on the invoice, not in the email</small></div>
+          <div class="note-field"><label for="invoice-note">Notes (optional)</label><textarea id="invoice-note" rows="4" placeholder="Add information or instructions for the customer"></textarea></div>
         </div>
         <footer class="modal-footer"><button type="button" id="discard" class="discard">Discard changes</button><button type="submit" class="primary">Save changes</button></footer>
       </form>
