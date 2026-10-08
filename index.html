@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Invoice at checkout · Interaction prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="prototype.js" defer></script>
+</head>
+<body>
+  <header class="topbar"><span class="brand"><span aria-hidden="true" class="brand-mark">ϟ</span> lightspeed</span><span>Front counter · Demo store</span></header>
+  <div class="prototype-bar">
+    <strong>Interaction prototype</strong>
+    <label for="scenario">Scenario</label>
+    <select id="scenario">
+      <option value="default">Default · $100 on account</option>
+      <option value="no-email">No customer email</option>
+      <option value="saved-only">Email available · save only</option>
+      <option value="partial">Split payment · $40 cash + $60 on account</option>
+      <option value="edited">Edited sale · $300 new invoice</option>
+    </select>
+    <button id="reset" class="quiet">Reset scenario</button>
+    <small>Sample data · No real emails or payments</small>
+  </div>
+  <div class="shell">
+    <aside class="navigation" aria-label="Register context"><strong>Front counter</strong><small>Demo store</small><div class="nav-current">Sell</div><div>Open / Close</div><div>Sales history</div><div>Cash management</div><div>Status</div><div>Settings</div><div>Quotes</div></aside>
+    <main>
+      <section class="sale-panel" aria-labelledby="sale-heading">
+        <h1 id="sale-heading">Sale</h1>
+        <div id="sale-items"></div>
+        <div class="sale-totals"><div class="row"><span>Subtotal</span><span id="subtotal"></span></div><div class="row"><span>Tax</span><span>$0.00</span></div></div>
+        <div id="payments"></div>
+        <div class="row grand"><span><strong>Sale total</strong> <small id="item-count"></small></span><strong id="sale-total"></strong></div>
+        <div id="original-invoice" class="original" hidden><strong>Previously issued</strong><p>Invoice INV0001 · $100.00</p><p>The original invoice stays unchanged. This sale adds $300.00.</p></div>
+      </section>
+      <section class="tender" aria-label="Complete sale">
+        <div class="tender-inner">
+          <h2 class="headline" id="headline"></h2>
+          <div class="quick-actions"><button class="text-button" data-receipt="standard">Print receipt</button><button class="text-button" data-receipt="gift">Gift receipt</button></div>
+          <section class="customer" aria-label="Customer account">
+            <div class="customer-name"><span class="avatar" aria-hidden="true">JS</span><div><strong>John Smith</strong><span class="tag">All customers</span><small>Customer 123 · Demo account</small></div></div>
+            <div class="balances"><div><small>Account balance</small><span id="balance"></span><small id="available" class="muted"></small></div><div><small>Loyalty balance</small><span>$0.00</span></div><div><small>Store credit</small><span>$0.00</span></div></div>
+          </section>
+          <section class="invoice-block" aria-label="Invoice summary">
+            <p id="invoice-summary"></p>
+            <p id="payment-summary" class="secondary" hidden></p>
+            <p id="delivery-summary"></p>
+            <button class="text-button" id="edit-invoice">Preview and edit invoice <span aria-hidden="true">♢</span></button>
+          </section>
+          <section class="receipt-block" aria-label="Receipt delivery"><label class="check-row"><input type="checkbox" id="receipt-email"><span>Send receipt by email to <strong id="receipt-address"></strong></span></label><p class="secondary" id="receipt-hint">Customer receipt · Separate from the invoice</p></section>
+          <div class="sale-note-field"><label for="sale-note">Sale note (optional)</label><textarea id="sale-note" rows="2" placeholder="Add details about the sale"></textarea></div>
+          <section id="completion" class="completion" role="status" tabindex="-1" hidden><h3>Sale completed</h3><p id="completion-message"></p><p id="completion-amounts"></p><small>Simulated outcome. No email was sent.</small></section>
+        </div>
+        <footer class="tender-footer"><button class="primary" id="complete-sale">Complete sale</button></footer>
+      </section>
+    </main>
+  </div>
+  <dialog id="invoice-dialog" aria-labelledby="modal-title" aria-describedby="modal-description">
+    <div class="modal-grid">
+      <section class="preview-pane" aria-label="Customer invoice preview">
+        <p class="preview-label">Preview</p>
+        <article class="document-card">
+          <h2 id="document-title">Invoice</h2>
+          <details><summary>Invoice details</summary><p>Sample customer invoice · USD</p><p>Issue date <span id="issue-date"></span></p></details>
+          <div class="addresses"><div><span class="muted">From</span><strong>Demo store</strong><span>store@example.com</span><span class="muted">700 Rue Saint-Antoine E<br>Montreal, QC H2Y 1A6</span></div><div><span class="muted">To</span><strong>John Smith</strong><span id="preview-email"></span></div></div>
+          <div id="preview-note-wrap" class="preview-note" hidden><span class="muted">Note</span><p id="preview-note"></p></div>
+          <div class="amount-card"><span class="secondary">Amount due</span><strong id="preview-due"></strong><span id="preview-date" aria-live="polite"></span></div>
+        </article>
+        <div class="payment-placeholder"><p>Online payment options</p><small>Customer payment controls appear on the issued invoice for Lightspeed Payments merchants.</small></div>
+        <article class="document-card item-card"><details open><summary>Invoice items</summary><div id="preview-items"></div></details><div class="row"><span>Subtotal</span><span id="preview-subtotal"></span></div><div class="row muted"><span>Tax</span><span>$0.00</span></div><div class="row"><strong>Invoice total</strong><strong id="preview-total"></strong></div><div class="row" id="preview-payment-row" hidden><span>Cash payment</span><span>−$40.00</span></div><div class="row total-due"><strong>Amount due</strong><strong id="preview-remaining"></strong></div><p id="preview-delta" class="secondary" hidden>New invoice for the $300.00 added to the sale. Original invoice INV0001 stays unchanged.</p></article>
+      </section>
+      <form id="invoice-form" novalidate>
+        <div class="modal-form-content">
+          <button type="button" id="close-modal" class="close" aria-label="Discard changes and close">×</button>
+          <h2 id="modal-title">Invoice settings</h2>
+          <p id="modal-description">Preview your customer’s invoice. Your changes apply when you complete the sale.</p>
+          <fieldset><legend>Invoice delivery</legend><label class="check-row"><input type="checkbox" id="send-email"><span>Send invoice by email</span></label><div id="email-field"><label for="email">Email address</label><input id="email" type="email" autocomplete="off" placeholder="email@example.com" aria-describedby="email-help email-error"><small id="email-help">For this invoice only</small><p id="email-error" class="field-error" role="alert" hidden></p></div><p id="saved-hint" class="secondary" hidden>Completing the sale saves the invoice to John Smith’s account without sending an email.</p></fieldset>
+          <div class="date-fields"><div><label for="terms">Payment terms</label><select id="terms"><option value="0">Due upon receipt</option><option value="15">Net 15</option><option value="30">Net 30</option><option value="60">Net 60</option><option value="custom">Custom</option></select></div><div><label for="due-date">Due date</label><input id="due-date" type="date" aria-describedby="date-error"></div></div>
+          <p id="date-error" class="field-error" role="alert" hidden></p>
+          <div class="note-field"><label for="invoice-note">Notes (optional)</label><textarea id="invoice-note" rows="4" aria-describedby="note-help" placeholder="Add information or instructions for the customer"></textarea><small id="note-help">Appears on the invoice, not in the email</small></div>
+        </div>
+        <footer class="modal-footer"><button type="button" id="discard" class="discard">Discard changes</button><button type="submit" class="primary">Save changes</button></footer>
+      </form>
+    </div>
+  </dialog>
+  <dialog id="receipt-dialog" aria-labelledby="receipt-title"><div class="receipt-preview"><button class="close" id="close-receipt" aria-label="Close receipt">×</button><h2 id="receipt-title">Customer receipt</h2><p>Demo store · John Smith</p><div id="receipt-content"></div><p class="secondary">Prototype preview. No print job or email is sent.</p><button class="primary" id="done-receipt">Done</button></div></dialog>
+  <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+</body>
+</html>
