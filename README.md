@@ -19,6 +19,11 @@ The preview updates while editing. **Save changes** applies the draft settings;
 simulates the outcome. Reset scenario returns to its initial state.
 
 Invoice email edits affect this invoice only. Receipt delivery remains separate.
+Only the invoice block and invoice settings are the subject of this design.
+Surrounding register blocks represent existing features, not proposed changes.
+The invoice block follows the designer's reference: one sentence with bold
+amount/date, then Preview and edit with a pencil icon. Without email delivery,
+the sentence ends with "will be saved". Amount and due date reflect the scenario.
 The fixed sample sale date is October 9, 2026. Custom dates cannot precede it.
 Cash/card-only sales do not create an invoice in this flow.
 
