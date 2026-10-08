@@ -66,7 +66,6 @@ function render() {
       $('payments').append(row);
     }
   }
-  $('original-invoice').hidden = scenario !== 'edited';
   $('summary-amount').textContent = money(fixture.invoice);
   $('summary-date').textContent = dateLabel(dueDate(state));
   $('summary-outcome').textContent = state.send ? 'will be emailed' : 'will be saved';
@@ -110,7 +109,6 @@ function renderPreview() {
   $('preview-total').textContent = money(fixture.invoice);
   $('preview-remaining').textContent = money(fixture.invoice - fixture.cash);
   $('preview-payment-row').hidden = !fixture.cash;
-  $('preview-delta').hidden = scenario !== 'edited';
   $('email-field').hidden = !draft.send;
   $('email').disabled = !draft.send;
   $('email').required = draft.send;
